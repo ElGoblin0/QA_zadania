@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Support.UI;
+using Microsoft.VisualStudio.TestTools;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace ConsoleApp1
+{
+    internal class Program
+    {
+
+        static void Main(string[] args)
+        {
+            
+            IWebDriver webDriver = new FirefoxDriver();
+            webDriver.Manage().Window.Maximize();
+            webDriver.Navigate().GoToUrl("https://www.saucedemo.com");
+
+            webDriver.FindElement(By.Id("user-name")).SendKeys("standard_user");
+            webDriver.FindElement(By.Id("password")).SendKeys("secret_sauce");
+
+            webDriver.FindElement(By.CssSelector("#login-button")).Click();
+
+            webDriver.FindElement(By.CssSelector("#add-to-cart-sauce-labs-backpack")).Click();
+            webDriver.FindElement(By.CssSelector("#add-to-cart-sauce-labs-bolt-t-shirt")).Click();
+            webDriver.FindElement(By.CssSelector("#add-to-cart-sauce-labs-fleece-jacket")).Click();
+
+            webDriver.FindElement(By.CssSelector("#shopping_cart_container")).Click();
+
+            webDriver.FindElement(By.CssSelector("#checkout")).Click();
+
+            webDriver.FindElement(By.Id("first-name")).SendKeys("Grzegorz");
+            webDriver.FindElement(By.Id("last-name")).SendKeys("Floryda");
+            webDriver.FindElement(By.Id("postal-code")).SendKeys("12-345");
+
+            webDriver.FindElement(By.CssSelector("#continue")).Click();
+
+            var total = webDriver.FindElement(By.CssSelector(".summary_total_label")).Text;
+            Assert.IsTrue(total == "Total: $103.65");
+
+            webDriver.FindElement(By.CssSelector("#finish")).Click();
+
+            var complete_order = webDriver.FindElement(By.CssSelector(".complete-header")).Text;
+            Assert.IsTrue(complete_order == "THANK YOU FOR YOUR ORDER");
+
+            webDriver.Quit();
+        }
+    }
+}
